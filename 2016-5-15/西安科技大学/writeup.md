@@ -1,3 +1,7 @@
+西安科技大学 内部赛的三道题目
+
+题目打包 [点击下载](https://github.com/GoldsNow/-/raw/5959936765c68a20e2231c1f671304f39b17ca60/2016-5-15/%E8%A5%BF%E5%AE%89%E7%A7%91%E6%8A%80%E5%A4%A7%E5%AD%A6/%E9%A2%98%E7%9B%AE.rar)
+
 ## TASK1
 题目有点意思 但是还是有点点水
 
@@ -81,3 +85,57 @@ IDA直接分析。  主函数 中找到在放完歌曲之后的函数
 	}
 最后贴上渣渣的程序。
 最后跑一下直接出flag！
+
+
+## TASK3
+
+OD打开 搜索一下字符串，然后发现有这么几条字符串比较可疑。
+
+![](https://raw.githubusercontent.com/GoldsNow/-/1f00d3609c9efa4100097ff71c6fd8dbfa2f82a0/2016-5-15/%E8%A5%BF%E5%AE%89%E7%A7%91%E6%8A%80%E5%A4%A7%E5%AD%A6/9.png)
+
+分别跟入会会发现比较可疑
+![](https://raw.githubusercontent.com/GoldsNow/-/1f00d3609c9efa4100097ff71c6fd8dbfa2f82a0/2016-5-15/%E8%A5%BF%E5%AE%89%E7%A7%91%E6%8A%80%E5%A4%A7%E5%AD%A6/8.png)
+
+然后我强制让这一段代码运行了一下，然后就会输出GETIT这样的字符串。
+说明在这个附近有判断字符串是否正确的语句
+
+![](https://raw.githubusercontent.com/GoldsNow/-/1f00d3609c9efa4100097ff71c6fd8dbfa2f82a0/2016-5-15/%E8%A5%BF%E5%AE%89%E7%A7%91%E6%8A%80%E5%A4%A7%E5%AD%A6/6.png)
+
+这个程序比较可疑，就是会有新的进程出来。
+
+
+程序调试到这里就很难再继续下去了 转到IDA来分析 然后再来到OD来看
+根据上面找到的地址，然后直接去查看IDA上的相关函数。然后直接分析代码。
+
+![](https://raw.githubusercontent.com/GoldsNow/-/1f00d3609c9efa4100097ff71c6fd8dbfa2f82a0/2016-5-15/%E8%A5%BF%E5%AE%89%E7%A7%91%E6%8A%80%E5%A4%A7%E5%AD%A6/7.png)
+
+
+	附上程序代码
+	#include<string.h>
+	#include<stdio.h>
+	
+	int main()
+	{
+		char a[]={"JIKE1202"};
+		int al=strlen(a);
+		char b[]={"Fiac>d;=ImlNNfQPR[lPJ?hsIEmrN;=H"};
+		char flag[32];
+		memset(flag, 0 ,sizeof(flag));
+		for(int i=0;i<32;i++)
+		{
+			int v2=i%al; 
+			for(int j=32;j<130;j++)
+			{
+				if((j<97||j>122)&&(j<65||j>90)&&j!='_'&&j!='{'&&j!='}')
+					continue;
+				char c=j;
+				if(b[i]== ((c & 0x20 | a[v2]) ^ (c << (a[v2] & 1))) % 65 + 58)
+					printf("%c",j);
+			}
+			printf(" ");
+		}
+		return 0;
+	}
+
+通过这个程序的输出可以发现这个题目也是有点点小问题的，能够输出多个解，这个也是没有办法的事情。对于相应的函数是很有可能能够得到多个解的。
+
