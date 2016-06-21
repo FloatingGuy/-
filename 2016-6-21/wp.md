@@ -1,3 +1,10 @@
+## 新年大礼包~ wp
+。。。半年过去了，才做完，，，有点惭愧。。。
+人家入门的基本题目、、、、我还是太菜了
+好好学习天天向上~
+
+不过感觉学到了好的新的姿势
+
 ## babyCrack
 用任意 .net 工具打开就可以看到源码
 		private void button1_Click(object sender, EventArgs e)
@@ -22,7 +29,7 @@
 
 寻找字符串。。发现在sub_411A20 为重要的函数
 
-cm2_0.png
+![](https://raw.githubusercontent.com/GoldsNow/-/7df9cc11fef75fb7b65bf73058ad624d1375f4a0/2016-6-21/cm2_1.png)
 
 但是经过加了花指令 无法 F5 编译
 
@@ -30,7 +37,7 @@ cm2_0.png
 
 去完后就变简单了
 
-cm2_1.png
+![](https://raw.githubusercontent.com/GoldsNow/-/7df9cc11fef75fb7b65bf73058ad624d1375f4a0/2016-6-21/cm2_2.png)
 
 就是简单的比较字符串
 
@@ -45,11 +52,11 @@ cm2_1.png
 IDA 载入 查找字符串 看到 The flag is flag{
 明显是在这个附近双击 查看附近的代码
 
-elf1_1.png
+![](https://raw.githubusercontent.com/GoldsNow/-/7df9cc11fef75fb7b65bf73058ad624d1375f4a0/2016-6-21/elf1_1.png)
+
 
 有一个gets 和 输入的函数，估计就是这个就是重点了。
-
-elf1_2.png
+![](https://raw.githubusercontent.com/GoldsNow/-/7df9cc11fef75fb7b65bf73058ad624d1375f4a0/2016-6-21/elf1_2.png)
 
 静态看的不是很舒服， 可以得到的信息点是 while(v3!=15) 可以知道字符串的长度为15
 至于sub_8048519 这个函数，，点进去看了，实在看不下去就不看了。。
@@ -59,13 +66,14 @@ elf1_2.png
 拿到 kali 的 逆向工具去调试一下，，输入abcdefghijklmno
 在 V8=0的地方下断点  运行到这个地方，，看堆栈
 
-elf1_4.png
+![](https://raw.githubusercontent.com/GoldsNow/-/7df9cc11fef75fb7b65bf73058ad624d1375f4a0/2016-6-21/elf1_4.png)
+
 
 在堆栈这里看到处理之后的字符串变成 nopq……zab 可以发现字母都偏移了13位，，往左往右偏移都是13位。。可以得到这个 sub_8048519 的主要目的应该就是 判断是不是属于 小写字母 并且偏移13位
 
 得到这样的推断后 继续往下分析 IDA 
 
-elf1_3.png
+![](https://raw.githubusercontent.com/GoldsNow/-/7df9cc11fef75fb7b65bf73058ad624d1375f4a0/2016-6-21/elf1_3.png)
 
 	if ( *(a1 + v8 - 88) - *(a1 + v8 - 89) != *(a1 + 4 * v8 - 76) )
 	        break;
@@ -106,20 +114,20 @@ elf1_3.png
 
 打开程序。找到输出，Please input your flag: 下方的代码
 
-elf3_3.png
+![](https://raw.githubusercontent.com/GoldsNow/-/7df9cc11fef75fb7b65bf73058ad624d1375f4a0/2016-6-21/elf3_3.png)
+
 
 看起来很简单的样子，直接看汇编，一遍动态调试一边观察。
 
+![](https://raw.githubusercontent.com/GoldsNow/-/7df9cc11fef75fb7b65bf73058ad624d1375f4a0/2016-6-21/elf3_2.png)
 
-elf3_2.png
 
 看到这里有一个循环，，，感觉并没有用，，直接在后面下断点就 过去了
 
 然后就栽在这里了。。搞了半天没搞出来。。。
 
 一个断点就会造成那个函数判断之后出来的 值的变化。。
-
-elf3_1.png
+![](https://raw.githubusercontent.com/GoldsNow/-/7df9cc11fef75fb7b65bf73058ad624d1375f4a0/2016-6-21/elf3_1.png)
 
 这里 eax就是真实的 值
 
@@ -132,7 +140,8 @@ elf3_1.png
 
 查找字符串来到这里，
 
-re200_2
+![](https://raw.githubusercontent.com/GoldsNow/-/7df9cc11fef75fb7b65bf73058ad624d1375f4a0/2016-6-21/re200_2.png)
+
 
 关键跳转 上面有 test al,al 就是call rax 里是不是正确
 
@@ -140,13 +149,13 @@ re200_2
 
 这个判断对接下来的东西并没有什么影响，只是判断用户名的长度而已
 
-re200_1
+![](https://raw.githubusercontent.com/GoldsNow/-/7df9cc11fef75fb7b65bf73058ad624d1375f4a0/2016-6-21/re200_1.png)
 
 这里和上面也差不多 因为是要跟入寄存器 所以一定要动态调试才能看到
 
 跟入后就简单了。
 
-re200_3
+![](https://raw.githubusercontent.com/GoldsNow/-/7df9cc11fef75fb7b65bf73058ad624d1375f4a0/2016-6-21/re200_3.png)
 
 发现这里是将输入的进行 -4 然后 异或 32处理
 
@@ -168,22 +177,21 @@ re200_3
 
 先到这里
 
-re300_1.png
+![](https://raw.githubusercontent.com/GoldsNow/-/7df9cc11fef75fb7b65bf73058ad624d1375f4a0/2016-6-21/re300_1.png)
 
 可以看到这里是判断用户名长度为8位
 
-re300_2.png
+![](https://raw.githubusercontent.com/GoldsNow/-/7df9cc11fef75fb7b65bf73058ad624d1375f4a0/2016-6-21/re300_2.png)
 
 这里有判断是不是这8位都是小写的字母
-
-re300_3.png
+![](https://raw.githubusercontent.com/GoldsNow/-/7df9cc11fef75fb7b65bf73058ad624d1375f4a0/2016-6-21/re300_3.png)
 
 这里和下面数据窗口中  每间隔 0xb 取一个字节  然后一共取8个 
 正好合起来是 syclover  不过猜一下也应该猜到了
 
 后面的注册码 有点意思，，大致的思路就是 讲输入的字母进行 0xab --> 0xba 这样的加密， 然后再与 0x40 进行异或 
 
-re300_4.png
+![](https://raw.githubusercontent.com/GoldsNow/-/7df9cc11fef75fb7b65bf73058ad624d1375f4a0/2016-6-21/re300_4.png)
 
 最后得到的字符串再和 这里紫色部分 每隔三个进行比较是否相同（3V...）
 
@@ -198,12 +206,15 @@ re300_4.png
 然后再到IDA里面看，看起来比较复杂。所以直接 用kali自带的edb调试
 
 调试中会自动退出，Ida 里看到是因为 ptrace() 在作怪，，直接绕过他 分析函数
-re_1.png
+
+![](https://raw.githubusercontent.com/GoldsNow/-/7df9cc11fef75fb7b65bf73058ad624d1375f4a0/2016-6-21/re_1.png)
 
 第一轮加密执行的是 x<<3|x>>5的操作
 
 第二轮 
-re_2.png
+
+![](https://raw.githubusercontent.com/GoldsNow/-/7df9cc11fef75fb7b65bf73058ad624d1375f4a0/2016-6-21/re_2.png)
+
 进行的是和一个数组异或。
 
 写一下解密程序
